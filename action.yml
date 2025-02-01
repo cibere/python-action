@@ -54,8 +54,7 @@ inputs:
     required: false
     default: '3.13'
   requirements:
-    description: |
-      "the path to your project's requirements file. if given, requirements will be installed after optionally installing python."
+    description: "the path to your project's requirements file. if given, requirements will be installed after optionally installing python."
     required: true
 
 runs:
