@@ -37,6 +37,11 @@ inputs:
     description: 'if given, python with the given version will be setup prior to running the tools. if omitted, python will not be setup.'
     required: false
     default: ''
+  requirements:
+    description: |
+      "the path to your project's requirements file. if given, requirements will be installed after optionally installing python."
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -46,6 +51,12 @@ runs:
       uses: actions/setup-python@v4
       with:
         python-version: ${{ inputs.python-version }}
+    
+    - name: Install Requirements
+      if: ${{ inputs.requirements != '' }}
+      shell: bash
+      run: |
+        pip install -r ${{ inputs.requirements }}
 
     - name: Install uv
       uses: astral-sh/setup-uv@v5
