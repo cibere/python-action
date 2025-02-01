@@ -64,27 +64,23 @@ runs:
     - name: Run Pyright
       if: ${{ inputs.pyright == 'true' }}
       shell: bash
-      continue-on-error: true
       run: |
         uvx pyright ${{ inputs.pyright-args }}
     
     - name: Run Ruff Linter
       if: ${{ inputs.ruff-linter == 'true' }}
       shell: bash
-      continue-on-error: true
       run: |
         uvx ruff check --output-format=github ${{ inputs.ruff-linter-args }}
 
     - name: Run Ruff Formatter
       if: ${{ inputs.ruff-formatter == 'true' }}
       shell: bash
-      continue-on-error: true
       run: |
         uvx ruff format --check ${{ inputs.ruff-formatter-args }}
     
     - name: Run Bandit
       if: ${{ inputs.bandit == 'true' }}
       shell: bash
-      continue-on-error: true
       run: |
         uvx bandit ${{ inputs.bandit-args }}
