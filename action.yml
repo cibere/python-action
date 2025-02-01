@@ -9,6 +9,10 @@ inputs:
     description: 'additional args to pass to pyright'
     required: false
     default: ''
+  pyright-version:
+    description: 'the version of pyright to use'
+    required: false
+    default: 'latest'
   ruff-linter:
     description: 'whether or not to run ruffs linter. set to "true" to run'
     required: false
@@ -17,6 +21,10 @@ inputs:
     description: 'additional args to pass to ruffs linter'
     required: false
     default: ''
+  ruff-linter-version:
+    description: 'the version of ruff to use when linting'
+    required: false
+    default: 'latest'
   ruff-formatter:
     description: 'whether or not to run ruffs formatter. set to "true" to run'
     required: false
@@ -25,6 +33,10 @@ inputs:
     description: 'additional args to pass to ruffs formatter'
     required: false
     default: ''
+  ruff-formatter-version:
+    description: 'the version of ruff to use when formatter'
+    required: false
+    default: 'latest'
   bandit:
     description: 'whether or not to run bandit. set to "true" to run'
     required: false
@@ -33,31 +45,22 @@ inputs:
     description: 'args to pass to bandit. Defaults to "-c pyproject.toml -r ."'
     required: false
     default: '-c pyproject.toml -r .'
-  python-version:
-    description: 'if given, python with the given version will be setup prior to running the tools. if omitted, python will not be setup.'
+  bandit-version:
+    description: 'the version of bandit to use'
     required: false
-    default: ''
+    default: 'latest'
+  python-version:
+    description: 'the python version to run the tools on'
+    required: false
+    default: '3.13'
   requirements:
     description: |
       "the path to your project's requirements file. if given, requirements will be installed after optionally installing python."
-    required: false
-    default: ''
+    required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Set up CPython Version ${{ inputs.python-version }}
-      if: ${{ inputs.python-version != '' }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ inputs.python-version }}
-    
-    - name: Install Requirements
-      if: ${{ inputs.requirements != '' }}
-      shell: bash
-      run: |
-        pip install -r ${{ inputs.requirements }}
-
     - name: Install uv
       uses: astral-sh/setup-uv@v5
     
@@ -65,22 +68,22 @@ runs:
       if: ${{ inputs.pyright == 'true' }}
       shell: bash
       run: |
-        uvx pyright ${{ inputs.pyright-args }}
+        uvx -p ${{ inputs.python-version }} --with-requirements ${{ inputs.requirements }} pyright@${{ inputs.pyright-version }} ${{ inputs.pyright-args }}
     
     - name: Run Ruff Linter
       if: ${{ inputs.ruff-linter == 'true' }}
       shell: bash
       run: |
-        uvx ruff check --output-format=github ${{ inputs.ruff-linter-args }}
+        uvx -p ${{ inputs.python-version }} --with-requirements ${{ inputs.requirements }} ruff@${{ inputs.ruff-linter-version }} check --output-format=github ${{ inputs.ruff-linter-args }}
 
     - name: Run Ruff Formatter
       if: ${{ inputs.ruff-formatter == 'true' }}
       shell: bash
       run: |
-        uvx ruff format --check ${{ inputs.ruff-formatter-args }}
+        uvx -p ${{ inputs.python-version }} --with-requirements ${{ inputs.requirements }} ruff@${{ inputs.ruff-formatter-version }} format --check ${{ inputs.ruff-formatter-args }}
     
     - name: Run Bandit
       if: ${{ inputs.bandit == 'true' }}
       shell: bash
       run: |
-        uvx bandit ${{ inputs.bandit-args }}
+        uvx -p ${{ inputs.python-version }} --with-requirements ${{ inputs.requirements }} bandit@${{ inputs.bandit-version }} ${{ inputs.bandit-args }}
