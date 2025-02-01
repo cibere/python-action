@@ -1,0 +1,30 @@
+name: Update References
+
+on:
+  push:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  input-reference:
+    runs-on: ubuntu-latest
+
+    name: Update Input Reference
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up CPython Version 3.13
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.13
+
+      - name: Install Requirements
+        shell: bash
+        run: |
+          pip install -r _update_ref/requirements.txt
+    
+      - name: Run Updater
+        run: |
+          python -m _update_ref
