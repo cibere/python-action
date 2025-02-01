@@ -1,0 +1,28 @@
+[tool.ruff]
+exclude = ["venv"]
+
+[tool.ruff.lint.per-file-ignores]
+"flogin/_types/**.py" = ["TC001", "TC002", "TC003"]
+"tests/**" = [
+    "ANN201", # https://docs.astral.sh/ruff/rules/missing-return-type-undocumented-public-function
+    "ANN001", # https://docs.astral.sh/ruff/rules/missing-type-function-argument
+    "ANN202", # https://docs.astral.sh/ruff/rules/missing-return-type-private-function
+    "ANN206", # https://docs.astral.sh/ruff/rules/missing-return-type-class-method
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.bandit]
+exclude_dirs = ["venv"]
+
+[tool.pyright]
+include = [
+    "_update_ref",
+]
+pythonPlatform = "Linux"
+typeCheckingMode = "basic"
+reportMissingTypeStubs = false
