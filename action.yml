@@ -25,6 +25,14 @@ inputs:
     description: 'additional args to pass to ruffs formatter'
     required: false
     default: ''
+  bandit:
+    description: 'whether or not to run bandit. set to "true" to run'
+    required: false
+    default: 'false'
+  bandit-args:
+    description: 'args to pass to bandit. Defaults to "-c pyproject.toml -r ."'
+    required: false
+    default: '-c pyproject.toml -r .'
 
 runs:
   using: "composite"
@@ -46,3 +54,8 @@ runs:
       if: ${{ inputs.ruff-formatter == 'true' }}
       run: |
         uvx ruff format --check ${{ inputs.ruff-formatter-args }}
+    
+    - name: Run Bandit
+      if: ${{ inputs.bandit == 'true' }}
+      run: |
+        uvx bandit ${{ inputs.bandit-args }}
