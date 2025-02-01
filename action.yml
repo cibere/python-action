@@ -1,0 +1,48 @@
+name: 'Python Tooling'
+description: 'Runs python tooling on your codebase'
+inputs:
+  pyright:
+    description: 'whether or not to run pyright. set to "true" to run'
+    required: false
+    default: 'false'
+  pyright-args:
+    description: 'additional args to pass to pyright'
+    required: false
+    default: ''
+  ruff-linter:
+    description: 'whether or not to run ruffs linter. set to "true" to run'
+    required: false
+    default: 'false'
+  ruff-linter-args:
+    description: 'additional args to pass to ruffs linter'
+    required: false
+    default: ''
+  ruff-formatter:
+    description: 'whether or not to run ruffs formatter. set to "true" to run'
+    required: false
+    default: 'false'
+  ruff-formatter-args:
+    description: 'additional args to pass to ruffs formatter'
+    required: false
+    default: ''
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    
+    - name: Run Pyright
+      if: ${{ inputs.pyright == 'true' }}
+      run: |
+        uvx pyright ${{ inputs.pyright-args }}
+    
+    - name: Run Ruff Linter
+      if: ${{ inputs.ruff-linter == 'true' }}
+      run: |
+        uvx ruff check --output-format=github ${{ inputs.ruff-linter-args }}
+
+    - name: Run Ruff Formatter
+      if: ${{ inputs.ruff-formatter == 'true' }}
+      run: |
+        uvx ruff format --check ${{ inputs.ruff-formatter-args }}
