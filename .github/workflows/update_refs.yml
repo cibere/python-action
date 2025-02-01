@@ -2,8 +2,6 @@ name: Update References
 
 on:
   push:
-  pull_request:
-    types: [opened, reopened, synchronize]
 
 jobs:
   input-reference:
@@ -28,3 +26,9 @@ jobs:
       - name: Run Updater
         run: |
           python -m _update_ref
+    
+      - name: Push Changes
+        continue-on-error: true
+        run: |
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" commit --author="cibere <71997063+cibere@users.noreply.github.com>" -m "Auto update input reference"
+          git push
